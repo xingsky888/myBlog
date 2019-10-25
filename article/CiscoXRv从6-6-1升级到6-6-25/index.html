@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Anthony&#39;s Blog">
+    <meta name="keyword"  content="Anthony Xing">
+    <link rel="shortcut icon" href="/myBlog/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          CiscoXRv从6.6.1升级到6.6.25 - Anthony Xing | Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://xingsky888.github.io/myBlog/myBlog/article/CiscoXRv从6-6-1升级到6-6-25/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/myBlog/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/myBlog/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/myBlog/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/myBlog/css/highlight.css">
+
+    <link rel="stylesheet" href="/myBlog/css/widget.css">
+
+    <link rel="stylesheet" href="/myBlog/css/rocket.css">
+
+    <link rel="stylesheet" href="/myBlog/css/signature.css">
+
+    <link rel="stylesheet" href="/myBlog/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/mmyBlog/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/myBlog/tags/#Cisco" title="Cisco">Cisco</a>
+                            
+                        </div>
+                        <h1>CiscoXRv从6.6.1升级到6.6.25</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Anthony Xing on
+                            2019-08-16
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/myBlog/">Anthony&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/myBlog/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/myBlog/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/myBlog/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/myBlog/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>从6.6.1升级到6.6.25有一些不太一样的地方，有些要点没有写在官方的操作指导里，很可能导致升级失败，在此记录一下以供参考。<br>
+前面几步一样的：<br>
+1、备份配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RP/0/RP0/CPU0:router#copy running-config harddisk:&lt;filename&gt;</span><br></pre></td></tr></table></figure>
+<p>然后copy到tftp服务器或者用scp备份到别处。<br>
+2、有一些版本升级到6.6.25要安装Bridge SMU. 这里是版本列表：<br>
+<img src="https://upload-images.jianshu.io/upload_images/12133543-3602b22f8b042837.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2019-08-16 20.41.25.png"><br>
+在安装bridge SMU之前，先运行下面命令清除inconsistency的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RP/0/RP0/CPU0:router#clear configuration inconsistency</span><br></pre></td></tr></table></figure>
+<p>安装过程请参考官网： NCS5500_Upgrade_Downgrade_MOP_6.6.25.pdf.<br>
+当然，从上面列表看到，6.6.1升级到6.6.25并不需要安装Bridge SMU.<br>
+3、一系列检查，在XR模式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#show platform #show platform vm #show redundancy</span><br><span class="line">(verify that all nodes are in &quot;OPERATIONAL&quot; state)</span><br><span class="line">(verify that all nodes are in &quot;FINAL Band&quot; state)</span><br><span class="line">(verify that a Standby RP is available and in &quot;ready&quot; state)</span><br><span class="line">#show ipv4 interface brief &lt;or&gt; show ipv6 interface brief &lt;or&gt; show interface summary (verify that all necessary interfaces are &quot;UP&quot;)</span><br><span class="line">#install verify packages (no anomalies should be displayed)</span><br><span class="line">#show install active summary (verify that the proper set of packages are active) #show install committed (verify that the proper set of committed packages are same</span><br><span class="line">as active. If not, execute ‘install commit’)</span><br><span class="line"># show health gsp (verify transport infrastructure is OK)</span><br><span class="line"># admin show controller fabric health (quick fabric health check)</span><br><span class="line">#show hw-module fpd (Ensure all the FPD versions status are CURRENT)</span><br><span class="line"># show alarms (Ensure no outstanding alarms)</span><br></pre></td></tr></table></figure>
+<p>4、调整IGP配置，调整流量，比如OSPF 使用&quot;max-metric&quot;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">router(config-ospf)# max-metric router-lsa</span><br></pre></td></tr></table></figure>
+<p>ISIS使用&quot;spf-overload-bit&quot;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">router(config-isis)# set-overload-bit</span><br></pre></td></tr></table></figure>
+<p>当然，升级完了要改回来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#OSPF </span><br><span class="line">router(config-ospf)# no max-metric router-lsa</span><br><span class="line">#ISIS</span><br><span class="line">router(config-isis)# no set-overload-bit</span><br></pre></td></tr></table></figure>
+<p>5、升级FPD<br>
+两种方式：<br>
+在XR和Sysadmin模式下分别激活auto-upgrade</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">RP/0/RP0/CPU0:router(config)#fpd auto-upgrade enable RP/0/RP0/CPU0:router(config)#commit RP/0/RP0/CPU0:router#show run fpd auto-upgrade</span><br><span class="line">fpd auto-upgrade enable</span><br><span class="line">RP/0/RP0/CPU0:router#admin</span><br><span class="line">admin connected from 127.0.0.1 using console on xr-vm_node0_RP0_CPU0 sysadmin-vm:0_RP0# conf t</span><br><span class="line">Thu Mar 28 22:02:06.750 UTC</span><br><span class="line">Entering configuration mode terminal</span><br><span class="line">sysadmin-vm:0_RP0(config)# fpd auto-upgrade enable sysadmin-vm:0_RP0(config)# commit sysadmin-vm:0_RP0# show running-config fpd</span><br><span class="line">Thu Mar 28 22:02:06.768 UTC</span><br><span class="line">fpd auto-upgrade enable</span><br></pre></td></tr></table></figure>
+<p>或者直接手工升级。<strong><em>注意，FPD升级是必须的</em></strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">RP/0/RP0/CPU0:NCS5501-LAB-1#sho hw-module fpd</span><br><span class="line">Fri Aug 16 20:07:59.709 UTC</span><br><span class="line">                                                               FPD Versions</span><br><span class="line">                                                               =================</span><br><span class="line">Location   Card type        HWver FPD device       ATR Status   Running Programd</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line">0/RP0     NCS-5501-SE       1.0   MB-MIFPGA            CURRENT    1.02    1.02</span><br><span class="line">0/RP0     NCS-5501-SE       1.0   Bootloader           CURRENT    1.19    1.19</span><br><span class="line">0/RP0     NCS-5501-SE       1.0   CPU-IOFPGA           CURRENT    1.19    1.19</span><br><span class="line">0/RP0     NCS-5501-SE       1.0   MB-IOFPGA            CURRENT    1.11    1.11</span><br></pre></td></tr></table></figure>
+<p>如果发现不一致，一定要在Sysadmin模式下运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysadmin-vm:0_RP0# upgrade hw-module location all fpd all</span><br></pre></td></tr></table></figure>
+<p>6、终于到升级软件了。<br>
+先把需要的软件上传到路由器harddisk:上，记住，剩余空间要超过要安装软件包的2倍大小，比如软件1.7G</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rw-r--r--. 1 1776609280 Aug 16 16:09 NCS5500-iosxr-k9-6.6.25.tar</span><br></pre></td></tr></table></figure>
+<p>硬盘就要有3.4G的剩余空间。可以使用sh media 或sh filesystem来查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">RP/0/RP0/CPU0:NCS5501-LAB-1#sh filesystem</span><br><span class="line">Fri Aug 16 22:24:56.557 UTC</span><br><span class="line">File Systems:</span><br><span class="line"></span><br><span class="line">     Size(b)     Free(b)        Type  Flags  Prefixes</span><br><span class="line">           0           0     network     rw  ftp:</span><br><span class="line">           0           0     network     rw  tftp:</span><br><span class="line">  3962216448  3851997184  flash-disk     rw  apphost:</span><br><span class="line">  2069835776  2039623680  flash-disk     rw  disk0:</span><br><span class="line">  5971681280  4072574976    harddisk     rw  harddisk:</span><br><span class="line">   480907264   478920704       flash     rw  /misc/config</span><br><span class="line">RP/0/RP0/CPU0:NCS5501-LAB-1#show media</span><br><span class="line">Fri Aug 16 22:25:02.916 UTC</span><br><span class="line"></span><br><span class="line">Media Information for local node.</span><br><span class="line"></span><br><span class="line">----------------------------------------------</span><br><span class="line">Partition                    Size     Used  Percent    Avail</span><br><span class="line">rootfs:                      3.9G     1.5G      40%     2.3G</span><br><span class="line">apphost:                     3.7G     106M       3%     3.4G</span><br><span class="line">/dev/sde                     969M     422M      47%     481M</span><br><span class="line">harddisk:                    5.6G     1.8G      34%     3.5G</span><br><span class="line">log:                         459M      49M      12%     376M</span><br><span class="line">config:                      459M     1.9M       1%     423M</span><br><span class="line">disk0:                       2.0G      29M       2%     1.8G</span><br><span class="line">---------------------------------------------------</span><br><span class="line">rootfs: = root file system (read-only)</span><br><span class="line">log: = system log files (read-only)</span><br><span class="line">config: = configuration storage (read-only)</span><br><span class="line">RP/0/RP0/CPU0:NCS5501-LAB-1#</span><br></pre></td></tr></table></figure>
+<p><strong><em>上载文件不要把tar包解压，直接上传</em></strong><br>
+我在这上面卡了好久，因为我先解压了，里面是这些rpm包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ncs5500-mpls-te-rsvp-3.1.0.0-r6625</span><br><span class="line">ncs5500-mini-x-6.6.25</span><br><span class="line">ncs5500-ospf-2.0.0.0-r6625</span><br><span class="line">ncs5500-isis-2.1.0.0-r6625</span><br><span class="line">ncs5500-li-1.0.0.0-r6625</span><br><span class="line">ncs5500-mpls-2.1.0.0-r6625</span><br><span class="line">ncs5500-mcast-2.1.0.0-r6625</span><br><span class="line">ncs5500-mgbl-3.0.0.0-r6625</span><br><span class="line">ncs5500-k9sec-3.1.0.0-r6625</span><br></pre></td></tr></table></figure>
+<p>虽然全部install add source XXX 都成功了，但是install prepare的时候总是失败，install activate 也失败。后来才知道prepare一个rpm包的时候，会把前面一个replace掉，真是不知说什么好。后来还是思科的专家提醒了一下，可以直接安装tar文件里的所有RPM，避免依赖的问题。<br>
+安装期间使用show install request查看安装进度。<br>
+7、install prepare完成后，会重启路由器，这是show install, show version都可以看到已经在6.6.25版本了。<br>
+但是还没有完，最后要install commit，不确认的话路由器重启又会变回6.6.1，因此记得确认。<br>
+然后检查fpd，还记得刚才的命令吗，show hw-module fpd， 如果有提示需要upgrade的还需要在sysadmin模式下运行upgrade hw-module location all fpd all<br>
+8、安装完成后，进行验证。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sh version</span><br><span class="line">sh install activate</span><br><span class="line">sh install active summary</span><br><span class="line">sh install log</span><br><span class="line">show configuration failed startup</span><br><span class="line">#清理硬盘</span><br><span class="line">install remove inactive all</span><br><span class="line">#检验配置文件</span><br><span class="line">RP/0/RP0/CPU0:NCS5501-LAB-1#clear configuration inconsistency</span><br><span class="line">Fri Aug 16 22:41:48.470 UTC</span><br><span class="line"></span><br><span class="line">Creating any missing directories in Configuration File system...OK</span><br><span class="line">Initializing Configuration Version Manager...OK</span><br><span class="line">Syncing commit database with running configuration...OK</span><br><span class="line">#检验fpd是否状态在current</span><br><span class="line">sh hw-module fpd</span><br><span class="line">#恢复IGP的流量， ISIS 或OSPF</span><br></pre></td></tr></table></figure>
+<p>搞定收工。据说初次升级总要失败个几次攒攒经验，手熟了就好了。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/myBlog/article/Set-overload-bit引起的中断/" data-toggle="tooltip" data-placement="top" title="Set-overload-bit引起的中断">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/myBlog/article/CiscoXRv设备添加SSH公钥/" data-toggle="tooltip" data-placement="top" title="CiscoXRv设备添加SSH公钥">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="nav">none</ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/myBlog/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/myBlog/tags/#Cisco" title="Cisco">Cisco</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://www.jianshu.com/u/32c854f32570" target="_blank">简书 AK蜗牛 -- It&#39;s Me</a></li>
+                    
+                        <li><a href="https://yq.aliyun.com/u/huweihuang" target="_blank">阿里云栖社区 胡伟煌</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xingsky888">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Anthony Xing 2019 
+                    <br>
+                    Theme by <a href="http://beantech.org">BeanTech</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/myBlog/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/myBlog/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/myBlog/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://xingsky888.github.io/myBlog/myBlog/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://xingsky888.github.io/myBlog/myBlog/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

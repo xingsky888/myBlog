@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Anthony&#39;s Blog">
+    <meta name="keyword"  content="Anthony Xing">
+    <link rel="shortcut icon" href="/myBlog/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          MP-BGP EVPN and VXLAN - Anthony Xing | Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://xingsky888.github.io/myBlog/myBlog/article/MP-BGP-EVPN-and-VXLAN/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/myBlog/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/myBlog/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/myBlog/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/myBlog/css/highlight.css">
+
+    <link rel="stylesheet" href="/myBlog/css/widget.css">
+
+    <link rel="stylesheet" href="/myBlog/css/rocket.css">
+
+    <link rel="stylesheet" href="/myBlog/css/signature.css">
+
+    <link rel="stylesheet" href="/myBlog/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/mmyBlog/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/myBlog/tags/#network" title="network">network</a>
+                            
+                        </div>
+                        <h1>MP-BGP EVPN and VXLAN</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Anthony Xing on
+                            2019-06-20
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/myBlog/">Anthony&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/myBlog/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/myBlog/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/myBlog/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/myBlog/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="关于vxlan"><strong>关于VXLAN</strong></h2>
+<p>(VXLAN)叫做虚拟可扩展局域网，用于实现网络虚拟化。通过在 IP-UDP 隧道封装 MAC，在 共享的L3网络上实现第 2 层扩展。其目的是突破地理位置限制，在数据中心内部或数据中心间灵活地部署工作负载，减少或消除物理服务器的堆叠。<br>
+VXLAN标准值定义了报文封装格式，但没有定义控制平面。VXLAN技术本身的问题在于：对BUM报文采用泛洪方式导致网络扩展性有限；集中式网关模式下的L3流量存在非最优情况，同时对网关设备的L3表项要求特别高。</p>
+<h2 id="evpnvxlan的控制平面"><strong>EVPN，VXLAN的控制平面</strong></h2>
+<ul>
+<li>EVPN(以太网虚拟专用网络)是多协议地址映射标准，使用BGP(边界网关协议)作为路由协议，再结合EVPN，就可以为VXLAN带来完整的控制平面。</li>
+<li>EVPN的IP/MAC学习是在控制平面中完成，而不是数据平面。控制平面使用MP-BGP协议，把成熟的BGP控制平面固有的扩展性带入MAC路由，甚至可以通过层次化或路由反射实现扩展，这一机制还为MAC学习提供了强大的控制能力，保持虚拟化和EVPN实例的隔离。</li>
+<li>EVPN服务可部署在任何核心网络上，为数据中心提供灵活的L2和L3 VPN进行站点互联。EVPN仅要求站点间IP互通，数据中心不需要部署MPLS或任何特殊的配置。</li>
+<li>EVPN允许网络链路上包含若干种不同的IP网络，运营商的网络对于EVPN而言是完全透明的，而EVPN拓扑对于运营商而言也是完全透明的。所能看到的仅仅是IP流量。在EVPN中的路由和MAC/IP通告由PE间的IBGP来控制完成。</li>
+<li>EVPN是基于VXLAN网络来部署的，依赖于VXLAN，但又解决了VXLAN现存的现实问题。</li>
+<li>EVPN技术天然就支持SDN，支持从网络控制器上提供的MAC/IP完成转发表项部署，使得可编程的网络控制得以实现。</li>
+</ul>
+<h2 id="mp-bgp-evpn的优势"><strong>MP-BGP EVPN的优势</strong></h2>
+<p>MP-BGP(多协议 BGP)EVPN(以太网虚拟专用网)是基于业界标准的 VXLAN 控制协议。IETF 已将 BGP EVPN 定义为 VXLAN 覆盖网络的标准控制平面。MP-BGP EVPN 控制平面提供基于协议的VTEP 对等设备发现和终端主机可达性信息分发功能，支持可扩展性更高的 VXLAN 覆 盖网络设计，适用于专用和公共云。<br>
+MP-BGP EVPN 控制平面提供一系列功能，消除或减少了覆盖网络中的洪泛，并支持各向流量的最佳转发。<br>
+MP-BGP EVPN 控制平面具备以下关键优势:</p>
+<ul>
+<li>基于业界标准的控制协议，支持多厂商互操作性。</li>
+<li>控制平面能够学习终端主机的第2层和第3层可达性信息，从而构建更为强大、可扩展性更高的VXLAN 覆盖网络。</li>
+<li>利用成熟的 MP-BGP VPN 技术，支持可扩展多租户VXLAN 覆盖网络。</li>
+<li>EVPN 地址族携带第 2 层和第 3 层可达性信息。在VXLAN 覆盖网络中提供了集成桥接和路由功能。</li>
+<li>通过协议驱动的主机MAC/IP路由分发和本地VTEP上的ARP抑制功能，将网络洪泛减至最少。</li>
+<li>通过分布式任意播功能，为东西向和南北向流量提供了最佳转发。</li>
+<li>提供VTEP对等设备发现和身份验证功能，降低了VXLAN覆盖网络出现恶意VTEP的风险。</li>
+<li>提供了在第2层建立主/主多寻址的机制。</li>
+</ul>
+<h2 id="evpn中的一些名词"><strong>EVPN中的一些名词</strong></h2>
+<ul>
+<li>EVI（EVPN Instance）：EVPN是一种虚拟私有网络，那么在一套物理设备上必然可以有多个同时存在的EVPN实例，每个实例独立存在。每个EVI连接了一组或者多组用户网络，构成一个或者多个跨地域的二层网络。</li>
+<li>ET（Ethernet Tag）：每个EVI可以构成一个或者多个二层网络。当EVI包含了多个二层网络时，通过Ethernet Tag来区分这些二层网络。</li>
+<li>Ethernet Segment：这是在CE同时连接到多个PE时才会有的概念。</li>
+<li>MAC-VRF：PE上的虚拟转发单元，类似于BGP/MPLS L3 VPN中的VRF。通过将PE抽象出多个虚拟单元，可以支持多租户场景，使PE同时被多个EVI使用。MAC-VRF中包含了实际的MAC转发表。</li>
+</ul>
+<h2 id="evpn的发展"><strong>EVPN的发展</strong></h2>
+<p>EVPN最早是思科提出来的，后来得到了诸多网络厂商的积极响应。初级的起草者包括：阿朗、思科、瞻博、Arktan、AT&amp;T、Bloomberg、Verizon等，EVPN来自于网络厂商和运营商的共同协作，双方共同定义了这一新技术。<br>
+EVPN是VXLAN发展过程中出现的最为成熟的技术，是SDN最终在数据中心落地必须要依仗的最为靠谱的技术，所以EVPN也得到了很多网络厂商的认同，在标准还没有完全形成之前，各个厂商就纷纷推出了支持EVPN的产品。比如：思科的Nexus 9500/9300，瞻博的QFX 5100/QFX 10000，华三S125F/S6800，华为的S12800等，一些厂商的设备还完成了相互之间的EVPN对接测试。EVPN技术从草案提出后，以惊人的速度发展完善，并达到可商用的状态。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/myBlog/article/Python学习路线全景图/" data-toggle="tooltip" data-placement="top" title="Python学习路线全景图">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/myBlog/article/Hello-World-From-Axing/" data-toggle="tooltip" data-placement="top" title="Hello World From Axing">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#关于vxlan"><span class="toc-nav-number">1.</span> <span class="toc-nav-text"><strong>&#x5173;&#x4E8E;VXLAN</strong></span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#evpnvxlan的控制平面"><span class="toc-nav-number">2.</span> <span class="toc-nav-text"><strong>EVPN&#xFF0C;VXLAN&#x7684;&#x63A7;&#x5236;&#x5E73;&#x9762;</strong></span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#mp-bgp-evpn的优势"><span class="toc-nav-number">3.</span> <span class="toc-nav-text"><strong>MP-BGP EVPN&#x7684;&#x4F18;&#x52BF;</strong></span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#evpn中的一些名词"><span class="toc-nav-number">4.</span> <span class="toc-nav-text"><strong>EVPN&#x4E2D;&#x7684;&#x4E00;&#x4E9B;&#x540D;&#x8BCD;</strong></span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#evpn的发展"><span class="toc-nav-number">5.</span> <span class="toc-nav-text"><strong>EVPN&#x7684;&#x53D1;&#x5C55;</strong></span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/myBlog/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/myBlog/tags/#network" title="network">network</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://www.jianshu.com/u/32c854f32570" target="_blank">简书 AK蜗牛 -- It&#39;s Me</a></li>
+                    
+                        <li><a href="https://yq.aliyun.com/u/huweihuang" target="_blank">阿里云栖社区 胡伟煌</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/xingsky888">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Anthony Xing 2019 
+                    <br>
+                    Theme by <a href="http://beantech.org">BeanTech</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.huweihuang.com">胡伟煌</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huweihuang&repo=hexo-theme-huweihuang&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/myBlog/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/myBlog/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/myBlog/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://xingsky888.github.io/myBlog/myBlog/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://xingsky888.github.io/myBlog/myBlog/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
