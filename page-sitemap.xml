@@ -7,6 +7,13 @@
     </url>
     
     <url>
+        <loc>https://xingsky888.github.io/myBlog/about/</loc>
+        <lastmod>2019-11-07T22:06:34.764Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
         <loc>https://xingsky888.github.io/myBlog/tags/404.html</loc>
         <lastmod>2019-10-24T23:47:36.423Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -16,13 +23,6 @@
     <url>
         <loc>https://xingsky888.github.io/myBlog/tags/</loc>
         <lastmod>2019-10-24T23:47:36.423Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>https://xingsky888.github.io/myBlog/about/</loc>
-        <lastmod>2019-10-24T23:47:36.199Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
